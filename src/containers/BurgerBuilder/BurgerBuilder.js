@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Aux from '../../hoc/Aux';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
+import Modal from '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 
 
 const Ingredient_Prices = {
@@ -19,7 +21,23 @@ class BurgerBuilder extends Component {
             meat: 0,
             cheese: 0
         },
-        totalPrice: 4
+        totalPrice: 4,
+        purchasable: false,
+        purchasing: false
+    }
+
+    updatePurchaseState (ingredients) {
+        // copying ingredients from state here made a bug of only when adding 2 ingredients did the button become enabled. this was due to not getting updatedIngredients but if put param here and call it later in the methods we want which have updatedIngredients
+        const sum = Object.keys(ingredients)
+            .map(igKey => {
+                return ingredients[igKey]
+            })
+            .reduce((sum, el) => {
+                return sum + el;
+            }, 0); // 0 or however many ingredients we have
+
+        // set to true if greater than 0 ingredients
+        this.setState({purchasable: sum > 0})
     }
 
     addIngredientHandler = (type) => {
@@ -39,6 +57,8 @@ class BurgerBuilder extends Component {
 
         // re-set state with updated ingredients and price
         this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
+
+        this.updatePurchaseState(updatedIngredients);
     }
 
     removeIngredientHandler = (type) => {
@@ -60,6 +80,17 @@ class BurgerBuilder extends Component {
 
         // re-set state with updated ingredients and price
         this.setState({totalPrice: newPrice, ingredients: updatedIngredients});
+
+        this.updatePurchaseState(updatedIngredients);
+    }
+
+    // if dont use arrow need to bind this
+    purchaseHandler = () => {
+        this.setState({purchasing: true});
+    }
+
+    purchaseCancelHandler = () => {
+        this.setState({purchasing: false})
     }
 
     render() {
@@ -73,11 +104,17 @@ class BurgerBuilder extends Component {
         }
         return(
             <Aux>
+                <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
+                    <OrderSummary ingredients={this.state.ingredients}/>
+                </Modal>
                 <Burger ingredients={this.state.ingredients}/>
                 <BuildControls
                     ingredientAdded={this.addIngredientHandler}
                     ingredientRemoved={this.removeIngredientHandler}
-                    disabled={disabledInfo}/>
+                    disabled={disabledInfo}
+                    purchasable={this.state.purchasable}
+                    ordered={this.purchaseHandler}
+                    price={this.state.totalPrice}/>
             </Aux>
         );
     }
