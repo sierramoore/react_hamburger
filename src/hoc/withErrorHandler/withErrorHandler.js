@@ -12,18 +12,25 @@ const withErrorHandler = (WrappedComponent, axios) => {
         //componentDidMount is called after all child components have been rendered
             //componentWillMount will be called b4 child elems rendered
         componentWillMount() {
-            axios.interceptors.request.use(req => {
+            this.reqInerceptor = axios.interceptors.request.use(req => {
                 this.setState({error: null})
                 return req; // have to return req
             })
 
-            axios.interceptors.response.use(res => res, error => {
+            this.resInerceptor = axios.interceptors.response.use(res => res, error => {
                 // have to return res above is shortest syntax for doing it
                 this.setState({error: error})
                 // there is message property on the error obj returned by firebase
 
             })
         }
+
+        componentWillUnmount() {
+            // if this hoc is used on muliple want to remove interceptors. need to store them when create then eject after mount
+            axios.interceptors.request.eject(this.reqInerceptor)
+            axios.interceptors.response.eject(this.resInerceptor)
+        }
+
         errorConfirmedHandler = () => {
             this.setState({error: null})
         }
