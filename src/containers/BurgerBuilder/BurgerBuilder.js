@@ -104,8 +104,7 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-        this.setState({loading: true})
-
+       /* this.setState({loading: true})
         const order = {
             ingredients: this.state.ingredients,
             price: this.state.totalPrice,
@@ -126,8 +125,21 @@ class BurgerBuilder extends Component {
             })
             .catch(error => {
                 this.setState({loading: false, purchasing: false})
-            })
+            }) */
         // node_name_of_ur_choice then .json and second param is data u want to pass
+
+        // burger componenet is not loaded thru a route obj. only burgerbuilder is loaded thru route obj in app(therefore has special route props). components nested inside burgerBuilder doesnt get those props but can add them manually by wrapping nested component in withRouter
+        const queryParams = [];
+        for(let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
+        }
+
+        const queryString = queryParams.join('&')
+
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
+        });
     }
 
     render() {
