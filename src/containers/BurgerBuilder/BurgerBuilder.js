@@ -129,13 +129,17 @@ class BurgerBuilder extends Component {
         // node_name_of_ur_choice then .json and second param is data u want to pass
 
         // burger componenet is not loaded thru a route obj. only burgerbuilder is loaded thru route obj in app(therefore has special route props). components nested inside burgerBuilder doesnt get those props but can add them manually by wrapping nested component in withRouter
+
+        // encode ingredients into a search query
+        // result = 'checkout?bacon=1&cheese=1&meat=1&salad=1'
         const queryParams = [];
         for(let i in this.state.ingredients) {
+            // encodeURIComponent is relevant fpr things like whitespace
+            // we have key(i) = coded ingredient (in queryParams)
             queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
         }
 
         const queryString = queryParams.join('&')
-
         this.props.history.push({
             pathname: '/checkout',
             search: '?' + queryString
