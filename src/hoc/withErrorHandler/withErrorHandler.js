@@ -10,7 +10,6 @@ const withErrorHandler = (WrappedComponent, axios) => {
         }
 
         //componentDidMount is called after all child components have been rendered
-            //componentWillMount will be called b4 child elems rendered
         componentWillMount() {
             this.reqInerceptor = axios.interceptors.request.use(req => {
                 this.setState({error: null})

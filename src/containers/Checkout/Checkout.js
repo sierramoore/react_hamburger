@@ -6,23 +6,24 @@ import ContactData from "./ContactData/ContactData";
 
 class Checkout extends Component {
     state = {
-        ingredients: {
-            salad: 1,
-            meat: 1,
-            cheese: 1,
-            bacon: 1
-        }
+        ingredients: null,
+        price: 0
     }
 
-    componentDidMount() {
+    componentWillMount() {
         // get url
         const query = new URLSearchParams(this.props.location.search);
         const ingredients = {}; //store current queried ingredients from url
+        let price = 0;
         for(let param of query.entries()){
-            // ['salad', 1]
-            ingredients[param[0]] = +param[1]
+            if(param[0] === 'price'){
+                price = param[1]
+            } else {
+                // ['salad', 1]
+                ingredients[param[0]] = +param[1];
+            }
         }
-        this.setState({ingredients: ingredients});
+        this.setState({ingredients: ingredients, totalPrice: price});
     }
 
     checkoutCancelledHandler = () => {
@@ -41,10 +42,12 @@ class Checkout extends Component {
                     checkoutContinued={this.checkoutContinuedHandler}/>
 
                 <Route
-                    path={this.props.match.path + '/contact-data'}                           component={ContactData}/>
+                    path={this.props.match.path + '/contact-data'}                           render={() => (<ContactData ingredients={this.state.ingredients} price={this.state.totalPrice} {...this.props}/>)}/>
             </div>
         )
     }
 }
 
 export default Checkout;
+
+// in Route using render instead of component allows you to pass props

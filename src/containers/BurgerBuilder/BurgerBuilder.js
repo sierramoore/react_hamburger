@@ -104,28 +104,6 @@ class BurgerBuilder extends Component {
     }
 
     purchaseContinueHandler = () => {
-       /* this.setState({loading: true})
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Sierra',
-                address: {
-                    street: 'calle uno',
-                    zipCode: '1234',
-                    country: 'Spain'
-                },
-                email: 'me@me.com'
-            },
-            deliveryMethod: 'fastest'
-        }
-        axios.post('/orders.json', order)
-            .then(response => {
-                this.setState({loading: false, purchasing: false}) // remove loader and close modal
-            })
-            .catch(error => {
-                this.setState({loading: false, purchasing: false})
-            }) */
         // node_name_of_ur_choice then .json and second param is data u want to pass
 
         // burger componenet is not loaded thru a route obj. only burgerbuilder is loaded thru route obj in app(therefore has special route props). components nested inside burgerBuilder doesnt get those props but can add them manually by wrapping nested component in withRouter
@@ -138,7 +116,8 @@ class BurgerBuilder extends Component {
             // we have key(i) = coded ingredient (in queryParams)
             queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
         }
-
+        // pass totalPrice along with ingredients to checkout
+        queryParams.push('price='+ this.state.totalPrice);
         const queryString = queryParams.join('&')
         this.props.history.push({
             pathname: '/checkout',

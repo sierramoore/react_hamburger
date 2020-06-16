@@ -41,4 +41,8 @@
         color: #40a4c8;
     }
 }
-
+/*
+styling with css modules makes class names unique
+Navlink auto uses active class
+can fix by adding activeClassName in Navlink
+*/
